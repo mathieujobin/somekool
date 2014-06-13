@@ -14,7 +14,8 @@ int file_length(FILE *fp) {
 
 char* content_from_file(char *filename) {
 	FILE* text_file = fopen(filename, "r");
-	printf("DEBUG: pointer is %d\n", text_file);
+	//printf("DEBUG: pointer is %d\n", text_file);
+	// fseek segfaults with file could not be open, text_file == 0
 	int file_len = file_length(text_file);
 	char *content = (char*)malloc(file_len);
 	int bytes_read = fread(content, 1, file_len, text_file);
@@ -68,6 +69,11 @@ struct list_of_words words_from_content(char *content) {
 	return lw;
 }
 
+/*************** QuickSort *****************/
+
+char* quicksort(char* array, int from, int end) {
+}
+
 /*************** Hash table definition **********************/
 struct entry {
 	char *key;
@@ -79,7 +85,11 @@ struct entry {
 // adds them to the length of the string.
 int key_to_index(char* key) {
 	int len = strlen(key);
-	return len + key[0] + key[len-1];
+	int base_key = len + key[0] + key[len-1];
+	if (base_key < 194) // dec ascii value of lower case a * 2
+		return base_key;
+	else
+		return base_key - 194;
 }
 
 	// hash table
@@ -89,7 +99,9 @@ void main(void) {
 	int i;
 	char *filename = "/home/mathieu/visa-worries.txt";
 	struct list_of_words lw = words_from_content(content_from_file(filename));
+	int* key_list = malloc(sizeof(int) * lw.word_count);
 	for (i = 0; i < lw.word_count; i++) {
-		printf("index for word %s is %d\n", lw.list[i], key_to_index(lw.list[i]));
+		key_list[i] = key_to_index(lw.list[i]);
+		printf("index for word %s is %d\n", lw.list[i], key_list[i]);
 	}
 }
