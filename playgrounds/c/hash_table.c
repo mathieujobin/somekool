@@ -86,6 +86,10 @@ int key_to_index(char* key) {
 	struct entry table[10000];
 
 void main(void) {
+	int i;
 	char *filename = "/home/mathieu/visa-worries.txt";
 	struct list_of_words lw = words_from_content(content_from_file(filename));
+	for (i = 0; i < lw.word_count; i++) {
+		printf("index for word %s is %d\n", lw.list[i], key_to_index(lw.list[i]));
+	}
 }
