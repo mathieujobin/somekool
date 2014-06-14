@@ -114,7 +114,37 @@ struct list_of_words words_from_content(char *content) {
 
 /*************** QuickSort *****************/
 
-char* quicksort(char* array, int from, int end) {
+void quicksort(int* array, int from, int end) {
+	if (from >= end || end == 1)
+		return;
+
+	int min = from, max = end;
+	int free_spot = from;
+	int pivot = array[from];
+	while (max > min) {
+		if (free_spot == min) {
+			if (array[max] > pivot) {
+				max--;
+			} else {
+				array[free_spot] = array[max];
+				free_spot = max;
+				min++;
+			}
+		} else if (free_spot == max) {
+			if (array[min] < pivot) {
+				min++;
+			} else {
+				array[free_spot] = array[min];
+				free_spot = min;
+				max--;
+			}
+		}
+	}
+
+	array[free_spot] = pivot;
+
+	quicksort(array, from, free_spot-1);
+	quicksort(array, free_spot+1, end);
 }
 
 /*************** Hash table definition **********************/
@@ -170,6 +200,8 @@ void main(void) {
 		key_list[i] = key_to_index(lw.list[i]);
 		printf("index for word %s is %d\n", lw.list[i], key_list[i]);
 	}
+	print_num_array(key_list, lw.word_count);
+	quicksort(key_list, 0, lw.word_count);
 	print_num_array(key_list, lw.word_count);
 	print_string_array(lw.list, lw.word_count);
 	free(key_list);
