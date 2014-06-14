@@ -32,18 +32,19 @@ int file_length(FILE *fp) {
 	return sz;
 }
 
-char* content_from_file(char *filename) {
+void content_from_file(char **content, char *filename) {
 	FILE* text_file = fopen(filename, "r");
-	//printf("DEBUG: pointer is %d\n", text_file);
+	if (text_file == 0) {
+		printf("could not open file at %s\n", filename);
+	}
 	// fseek segfaults with file could not be open, text_file == 0
 	int file_len = file_length(text_file);
-	char *content = (char*)malloc(file_len);
-	int bytes_read = fread(content, 1, file_len, text_file);
+	*content = (char*)malloc(file_len+1);
+	int bytes_read = fread(*content, 1, file_len, text_file);
 	if (bytes_read != file_len) {
 		printf("incorrect byte count %d versus %d\n", bytes_read, file_len);
 	}
 	fclose(text_file);
-	return content;
 }
 
 /******************* String to Word splitter... **************************/
@@ -137,10 +138,17 @@ int key_to_index(char* key) {
 	// hash table
 	struct entry table[10000];
 
+struct list_of_words lw_from_file(char *filename) {
+	char *content = NULL;
+	content_from_file(&content, filename);
+	struct list_of_words lw = words_from_content(content);
+	free(content);
+	return lw;
+}
+
 void main(void) {
 	int i;
-	char *filename = "/home/mathieu/visa-worries.txt";
-	struct list_of_words lw = words_from_content(content_from_file(filename));
+	struct list_of_words lw = lw_from_file("/home/mathieu/visa-worries.txt");
 	print_list_of_words(lw);
 	int* key_list = malloc(sizeof(int) * lw.word_count);
 	for (i = 0; i < lw.word_count; i++) {
