@@ -112,6 +112,17 @@ struct list_of_words words_from_content(char *content) {
 	return lw;
 }
 
+/*************** lw_from_file *****************/
+
+// Load up a text file from disk and return a list_of_words struct
+struct list_of_words lw_from_file(char *filename) {
+	char *content = NULL;
+	content_from_file(&content, filename);
+	struct list_of_words lw = words_from_content(content);
+	free(content);
+	return lw;
+}
+
 /*************** QuickSort *****************/
 
 void quicksort(int* array, int from, int end) {
@@ -182,14 +193,6 @@ int key_to_index(char* key) {
 
 	// hash table
 	struct entry table[10000];
-
-struct list_of_words lw_from_file(char *filename) {
-	char *content = NULL;
-	content_from_file(&content, filename);
-	struct list_of_words lw = words_from_content(content);
-	free(content);
-	return lw;
-}
 
 void main(void) {
 	int i;
