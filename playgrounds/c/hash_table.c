@@ -52,6 +52,27 @@ struct list_of_words {
 	char **list;
 };
 
+void free_list_of_words(struct list_of_words lw) {
+	int i;
+	for (i = lw.word_count - 1; i >= 0; i--) {
+		//printf("freeing word \"%s\" at address %d\n", lw.list[i], *(lw.list+i));
+		free(*(lw.list+i));
+	}
+	free(lw.list);
+}
+
+void print_list_of_words(struct list_of_words lw) {
+	int i;
+	char *format = "%s, ";
+
+	printf("[ ");
+	for (i = 0; i < lw.word_count; i++) {
+		printf(format, lw.list[i]);
+	}
+	printf("\x8\x8"); // erasing last delimitor
+	printf(" ]\n");
+}
+
 struct list_of_words words_from_content(char *content) {
 	int i = 0, word_count = 0, word_start = 0, word_length = 0;
 	char **bucket = malloc(sizeof(char*)*10000); // allocating memory for 10000 pointers
@@ -120,6 +141,7 @@ void main(void) {
 	int i;
 	char *filename = "/home/mathieu/visa-worries.txt";
 	struct list_of_words lw = words_from_content(content_from_file(filename));
+	print_list_of_words(lw);
 	int* key_list = malloc(sizeof(int) * lw.word_count);
 	for (i = 0; i < lw.word_count; i++) {
 		key_list[i] = key_to_index(lw.list[i]);
@@ -128,4 +150,5 @@ void main(void) {
 	print_num_array(key_list, lw.word_count);
 	print_string_array(lw.list, lw.word_count);
 	free(key_list);
+	free_list_of_words(lw);
 }
