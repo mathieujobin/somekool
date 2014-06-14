@@ -55,7 +55,6 @@ struct list_of_words {
 struct list_of_words words_from_content(char *content) {
 	int i = 0, word_count = 0, word_start = 0, word_length = 0;
 	char **bucket = malloc(sizeof(char*)*10000); // allocating memory for 10000 pointers
-	char *word = NULL;
 	int len = strlen(content);
 
 	//printf("DEBUG: string is >>>%s<<<\n", content);
@@ -64,10 +63,10 @@ struct list_of_words words_from_content(char *content) {
 		// if we are on a delimitor char (comma, dot, space, tab, CR, LF)
 		if (c == 44 || c == 46 || c == 32 || c == 9 || c == 10 || c == 13) {
 			if (word_length > 0) { // we got a word...
-				word = malloc(word_length+1); // allocating memory for word
-				strncpy(word, content+word_start, word_length);
+				bucket[word_count] = malloc(word_length+1); // allocating memory for word
+				strncpy(bucket[word_count], content+word_start, word_length);
 				word_length = 0; word_start = i+1;
-				bucket[word_count++] = word;
+				word_count++;
 				//printf("DEBUG: word >%s< copied into bucket\n", bucket[word_count-1]);
 			} else {
 				// hit a delimitor on a empty word, most likely two delimitor following each other
