@@ -123,13 +123,28 @@ struct entry {
 	void *val;
 };
 
-// simple function that returns an index key
+// simple hash function that returns an index key for a value
 // for a given string. Takes the ascii value of the first and last char
 // adds them to the length of the string.
 int key_to_index(char* key) {
 	int len = strlen(key);
-	int base_key = len + key[0] + key[len-1];
-	if (base_key < 194) // dec ascii value of lower case a * 2
+	int val(x) {
+		if (x < 60) // most likely a number...
+			return x - 48;
+		else if (x < 91) // most likely an uppercase letter
+			return x - 55; // removing 65 - 10
+		else // most likely a lowercase letter
+			return x - 61; // removing 97 - 10 - 26
+	}
+	int base_key;
+	if (len == 1)
+		base_key = val(key[0]);
+	else
+		base_key = len * (val(key[0]) + 2*val(key[1]) + 4*val(key[len-1]));
+
+	if (base_key < 0)
+		return -1 * base_key;
+	else if (base_key < 194) // dec ascii value of lower case a * 2
 		return base_key;
 	else
 		return base_key - 194;
