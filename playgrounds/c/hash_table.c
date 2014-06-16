@@ -4,6 +4,12 @@
 #define TRUE 1
 #define FALSE 0
 
+void* malloc_and_set(size_t size) {
+	void *ptr = malloc(size);
+	memset(ptr, 0, size);
+	return ptr;
+}
+
 /*************** Simple Print functions *************************/
 void print_string_array(char **list, int size) {
 	printf("[ ");
@@ -39,7 +45,7 @@ void content_from_file(char **content, char *filename) {
 	}
 	// fseek segfaults with file could not be open, text_file == 0
 	int file_len = file_length(text_file);
-	*content = (char*)malloc(file_len+1);
+	*content = (char*)malloc_and_set(file_len+1);
 	int bytes_read = fread(*content, 1, file_len, text_file);
 	if (bytes_read != file_len) {
 		printf("incorrect byte count %d versus %d\n", bytes_read, file_len);
@@ -76,7 +82,7 @@ void print_list_of_words(struct list_of_words lw) {
 
 struct list_of_words words_from_content(char *content) {
 	int i = 0, word_count = 0, word_start = 0, word_length = 0;
-	char **bucket = malloc(sizeof(char*)*10000); // allocating memory for 10000 pointers
+	char **bucket = malloc_and_set(sizeof(char*)*10000); // allocating memory for 10000 pointers
 	int len = strlen(content);
 
 	//printf("DEBUG: string is >>>%s<<<\n", content);
@@ -85,7 +91,7 @@ struct list_of_words words_from_content(char *content) {
 		// if we are on a delimitor char (comma, dot, space, tab, CR, LF)
 		if (c == 44 || c == 46 || c == 32 || c == 9 || c == 10 || c == 13) {
 			if (word_length > 0) { // we got a word...
-				bucket[word_count] = malloc(word_length+1); // allocating memory for word
+				bucket[word_count] = malloc_and_set(word_length+1); // allocating memory for word
 				strncpy(bucket[word_count], content+word_start, word_length);
 				word_length = 0; word_start = i+1;
 				word_count++;
@@ -103,7 +109,7 @@ struct list_of_words words_from_content(char *content) {
 	printf("DEBUG: creating list of words\n");
 	struct list_of_words lw;
 	lw.word_count = word_count;
-	lw.list = malloc(sizeof(char*)*word_count); // reallocate needed amount of pointers
+	lw.list = malloc_and_set(sizeof(char*)*word_count); // reallocate needed amount of pointers
 	for(i = 0; i < word_count; i++) {
 		lw.list[i] = bucket[i];
 	}
