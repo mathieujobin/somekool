@@ -132,7 +132,7 @@ struct list_of_words lw_from_file(char *filename) {
 /*************** mergeSort *****************/
 
 int* array_slice(int* array, int from, int end) {
-	int size = (end - from);
+	int size = (end - from) + 1;
 	int *out = malloc_and_set(sizeof(int)*size);
 	int i; for (i = 0; i < size; i++) {
 		out[i] = array[from+i];
