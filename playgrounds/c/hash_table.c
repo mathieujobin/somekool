@@ -237,7 +237,9 @@ void main(void) {
 		key_list[i] = key_to_index(lw.list[i]);
 		printf("index for word %s is %d\n", lw.list[i], key_list[i]);
 	}
-	print_num_array(mergesort(key_list, lw.word_count), lw.word_count);
+	int *copy = array_slice(key_list, 0, lw.word_count);
+	print_num_array(mergesort(copy, lw.word_count), lw.word_count);
+	free(copy);
 	print_num_array(key_list, lw.word_count);
 	quicksort(key_list, 0, lw.word_count);
 	print_num_array(key_list, lw.word_count);
