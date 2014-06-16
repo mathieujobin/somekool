@@ -129,6 +129,42 @@ struct list_of_words lw_from_file(char *filename) {
 	return lw;
 }
 
+/*************** mergeSort *****************/
+
+int* array_slice(int* array, int from, int end) {
+	int size = (end - from);
+	int *out = malloc_and_set(sizeof(int)*size);
+	int i; for (i = 0; i < size; i++) {
+		out[i] = array[from+i];
+	}
+	return out;
+}
+
+int* mergesort(int* array, int nsize) {
+	if (nsize <= 1)
+		return; // array of size 1 or less is always sorted, recursion ends;
+
+	int mid = (nsize / 2);
+	int *part_a = mergesort(array_slice(array, 0, mid), mid);
+	int *part_b = mergesort(array_slice(array, mid, nsize), nsize-mid);
+
+	int offset_a = 0, offset_b = 0;
+	while (offset_a <= mid || offset_b <= (nsize-mid)) {
+		if (part_a[offset_a] <= part_b[offset_b])
+			array[offset_a+offset_b] = part_a[offset_a++];
+		else
+			array[offset_a+offset_b] = part_b[offset_b++];
+	}
+	while (offset_a <= mid) {
+			array[offset_a+offset_b] = part_a[offset_a++];
+	}
+	while (offset_b <= (nsize-mid)) {
+			array[offset_a+offset_b] = part_b[offset_b++];
+	}
+	free(part_a); free(part_b);
+	return array;
+}
+
 /*************** QuickSort *****************/
 
 void quicksort(int* array, int from, int end) {
@@ -209,6 +245,7 @@ void main(void) {
 		key_list[i] = key_to_index(lw.list[i]);
 		printf("index for word %s is %d\n", lw.list[i], key_list[i]);
 	}
+	print_num_array(mergesort(key_list, lw.word_count), lw.word_count);
 	print_num_array(key_list, lw.word_count);
 	quicksort(key_list, 0, lw.word_count);
 	print_num_array(key_list, lw.word_count);
