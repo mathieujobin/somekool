@@ -10,7 +10,7 @@
 //#define DEBUG
 
 void debug(char *s) {
-#ifdef TRUE
+#ifdef DEBUG
 	printf("DEBUG: %s\n", s);
 #endif
 }
@@ -291,17 +291,23 @@ void* hash_get(hash_entry *table[], char *key) {
 	return (*table)[index].val;
 }
 
-void hash_set(hash_entry *table[], char *key, char *value) {
+void hash_set(hash_entry *table[], char *key, void *value) {
 	int index = key_to_index(key);
 	int first_index = index;
-	while ((*table)[index].key != 0) {
+	while ((*table)[index].key != 0 && strcmp((*table)[index].key, key) != 0) {
+		debug("hash key collision handled");
 		index++; // simply increment to prevent collision.
 	}
 	// for testing...
 	global_adding_counter++;
-#ifdef TRUE
-	printf("DEBUG: Storing {%d, %s, %s} into hash table at index %d.\n",
-		first_index, key, value, index);
+#ifdef DEBUG
+	if ((*table)[index].key != 0) {
+		// key was already store, not storing duplicate key in our hash
+		printf("DEBUG: potentially overwriting value (%s -> %s) for key %s\n", (*table)[index].val, value, key);
+	} else {
+		printf("DEBUG: Storing {%d, %s, %s} into hash table at index %d.\n",
+			first_index, key, value, index);
+	}
 #endif
 	// storing data
 	(*table)[index].calculated_index = first_index;
