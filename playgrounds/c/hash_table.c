@@ -286,7 +286,6 @@ void create_and_sort_a_key_list(struct list_of_words lw) {
 	int* key_list = malloc_and_set(sizeof(int) * lw.word_count);
 	int i = 0; for (; i < lw.word_count; i++) {
 		key_list[i] = key_to_index(lw.list[i]);
-		printf("index for word %s is %d\n", lw.list[i], key_list[i]);
 #ifdef DEBUG
 		printf("DEBUG: index for word %s is %d\n", lw.list[i], key_list[i]);
 #endif
