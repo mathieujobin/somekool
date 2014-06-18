@@ -377,6 +377,7 @@ void main(void) {
 	// hash table
 	debug("allocating memory for hash table");
 	hash_entry **table = malloc_and_set(sizeof(hash_entry)*table_length);
+	debug("storing all words into hash table");
 	int i = 0; for (; i < lw.word_count; i++) {
 		hash_set(&table, lw.list[i], lw.list[i]);
 		//table[key_list[i]] = lw.list[i];
