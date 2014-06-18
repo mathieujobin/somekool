@@ -10,7 +10,7 @@ void* malloc_and_set(size_t size) {
 	return ptr;
 }
 
-/*************** Simple Print functions *************************/
+/*************** Simple Array functions *************************/
 void print_string_array(char **list, int size) {
 	printf("[ ");
 	int i; for (i = 0; i < size; i++) {
@@ -27,6 +27,18 @@ void print_num_array(int *list, int size) {
 	}
 	printf("\x8\x8"); // erasing last delimitor
 	printf(" ]\n");
+}
+
+int compare_array(int *A, int *B, int N) {
+	int i = 0; for (; i < N; i++) {
+		if (A[i] != B[i]) {
+			printf("not the same ... %d != %d\n", A[i], B[i]);
+			print_num_array(A, N);
+			print_num_array(B, N);
+			return FALSE;
+		}
+	}
+	return TRUE;
 }
 
 /*************** File manipulation functions *********************/
@@ -239,12 +251,20 @@ void main(void) {
 		printf("index for word %s is %d\n", lw.list[i], key_list[i]);
 	}
 	int *copy = array_slice(key_list, 0, lw.word_count);
-	print_num_array(mergesort(copy, lw.word_count), lw.word_count);
-	free(copy);
+
+	printf("*** Unsorted key_list array ***\n");
 	print_num_array(key_list, lw.word_count);
+
+	printf("*** Merge-Sorted key_list array ***\n");
+	print_num_array(mergesort(copy, lw.word_count), lw.word_count);
+
+	printf("*** Quick-Sorted key_list array ***\n");
 	quicksort(key_list, 0, lw.word_count);
 	print_num_array(key_list, lw.word_count);
+	int r = compare_array(key_list, copy, lw.word_count);
+	printf("array are the same %d\n", r);
 	print_string_array(lw.list, lw.word_count);
 	free(key_list);
+	free(copy);
 	free_list_of_words(lw);
 }
