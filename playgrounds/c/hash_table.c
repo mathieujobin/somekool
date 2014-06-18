@@ -4,6 +4,7 @@
 #define TRUE 1
 #define FALSE 0
 #define prln printf("\n")
+#define enable_global_count 1
 
 void* malloc_and_set(size_t size) {
 	void *ptr = malloc(size);
@@ -152,10 +153,17 @@ struct list_of_words lw_from_file(char *filename) {
 
 /*************** mergeSort *****************/
 
+#ifdef enable_global_count
+int global_count = 0;
+#endif
+
 int* array_slice(int* array, int from, int end) {
 	int size = (end - from);
 	int *out = malloc_and_set(sizeof(int)*size);
 	int i; for (i = 0; i < size; i++) {
+#ifdef enable_global_count
+		global_count++;
+#endif
 		out[i] = array[from+i];
 	}
 	return out;
@@ -184,12 +192,21 @@ int* mergesort(int* array, int nsize) {
 		} else {
 			array[offset_a+offset_b] = part_b[offset_b++];
 		}
+#ifdef enable_global_count
+		global_count++;
+#endif
 	}
 	while (offset_a < mid) {
-			array[offset_a+offset_b] = part_a[offset_a++];
+#ifdef enable_global_count
+		global_count++;
+#endif
+		array[offset_a+offset_b] = part_a[offset_a++];
 	}
 	while (offset_b < (nsize-mid)) {
-			array[offset_a+offset_b] = part_b[offset_b++];
+#ifdef enable_global_count
+		global_count++;
+#endif
+		array[offset_a+offset_b] = part_b[offset_b++];
 	}
 	free(part_a); free(part_b);
 	return array;
@@ -210,6 +227,9 @@ void quicksort(int* array, int from, int end) {
 				max--;
 			} else {
 				array[free_spot] = array[max];
+#ifdef enable_global_count
+		global_count++;
+#endif
 				free_spot = max;
 				min++;
 			}
@@ -218,6 +238,9 @@ void quicksort(int* array, int from, int end) {
 				min++;
 			} else {
 				array[free_spot] = array[min];
+#ifdef enable_global_count
+		global_count++;
+#endif
 				free_spot = min;
 				max--;
 			}
@@ -275,11 +298,19 @@ void main(void) {
 	printf("*** Unsorted key_list array ***\n");
 	print_num_array(key_list, lw.word_count); prln;
 
+#ifdef enable_global_count
+	global_count = 0;
+	mergesort(copy, lw.word_count);
+	printf("global count for mergesort is %d for N = %d\n", global_count, lw.word_count);
+	global_count = 0;
+	quicksort(key_list, 0, lw.word_count);
+	printf("global count for quicksort is %d for N = %d\n", global_count, lw.word_count);
+#endif
+
 	printf("*** Merge-Sorted key_list array ***\n");
-	print_num_array(mergesort(copy, lw.word_count), lw.word_count); prln;
+	print_num_array(copy, lw.word_count); prln;
 
 	printf("*** Quick-Sorted key_list array ***\n");
-	quicksort(key_list, 0, lw.word_count);
 	print_num_array(key_list, lw.word_count); prln;
 	int r = compare_array(key_list, copy, lw.word_count);
 	printf("array are the same %d\n", r);
