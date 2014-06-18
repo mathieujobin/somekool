@@ -292,8 +292,11 @@ void create_and_sort_a_key_list(struct list_of_words lw) {
 	}
 	int *copy = array_slice(key_list, 0, lw.word_count);
 
+#ifdef DEBUG
+	prln;
 	printf("*** Unsorted key_list array ***\n");
 	print_num_array(key_list, lw.word_count); prln;
+#endif
 
 #ifdef enable_global_count
 	global_count = 0;
@@ -304,13 +307,16 @@ void create_and_sort_a_key_list(struct list_of_words lw) {
 	printf("global count for quicksort is %d for N = %d\n", global_count, lw.word_count);
 #endif
 
+#ifdef DEBUG
 	printf("*** Merge-Sorted key_list array ***\n");
 	print_num_array(copy, lw.word_count); prln;
 
 	printf("*** Quick-Sorted key_list array ***\n");
 	print_num_array(key_list, lw.word_count); prln;
+#endif
+
 	int r = compare_array(key_list, copy, lw.word_count);
-	printf("array are the same %d\n", r);
+	printf("\n\nArrays are %sthe same.\n", (r?"" :"not "));
 	free(key_list);
 	free(copy);
 }
