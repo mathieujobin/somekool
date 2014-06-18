@@ -5,6 +5,8 @@
 #define FALSE 0
 #define prln printf("\n")
 #define enable_global_count 1
+#define nil_s(v) (v == NULL ? "NULL" : "obj<#v>")
+#define bool_s(v) (v == NULL || v == FALSE ? "FALSE" : "TRUE")
 
 void* malloc_and_set(size_t size) {
 	void *ptr = malloc(size);
@@ -267,7 +269,7 @@ void test_all_entries(hash_entry *table[]) {
 	int i; for (i = 0; i < table_length; i++) {
 		hash_entry e = (*table)[i];
 		printf("DEBUG: hash_entry at %d is %s => %s : [TEST: %s]\n",
-			i, e.key, (char*)e.val, (e.val == NULL ? "TRUE" : "FALSE"));
+			i, e.key, (char*)e.val, nil_s(e.val));
 	}
 }
 
