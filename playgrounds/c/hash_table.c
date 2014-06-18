@@ -5,7 +5,7 @@
 #define FALSE 0
 #define prln printf("\n")
 #define enable_global_count 1
-#define nil_s(v) (v == NULL ? "NULL" : "obj<#v>")
+#define nil_s(v) (v == NULL ? "NULL" : "object<" #v ">")
 #define bool_s(v) (v == NULL || v == FALSE ? "FALSE" : "TRUE")
 
 void* malloc_and_set(size_t size) {
