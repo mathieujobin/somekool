@@ -282,7 +282,7 @@ int key_to_index(char* key) {
 	// hash table
 	struct entry table[10000];
 
-void create_and_sort_a_key_list(struct list_of_words lw) {
+void create_a_key_list(struct list_of_words lw) {
 	int* key_list = malloc_and_set(sizeof(int) * lw.word_count);
 	int i = 0; for (; i < lw.word_count; i++) {
 		key_list[i] = key_to_index(lw.list[i]);
@@ -290,6 +290,10 @@ void create_and_sort_a_key_list(struct list_of_words lw) {
 		printf("DEBUG: index for word %s is %d\n", lw.list[i], key_list[i]);
 #endif
 	}
+	return key_list;
+}
+
+void sort_twice_and_compare(int *key_list) {
 	int *copy = array_slice(key_list, 0, lw.word_count);
 
 #ifdef DEBUG
@@ -317,7 +321,6 @@ void create_and_sort_a_key_list(struct list_of_words lw) {
 
 	int r = compare_array(key_list, copy, lw.word_count);
 	printf("\n\nArrays are %sthe same.\n", (r?"" :"not "));
-	free(key_list);
 	free(copy);
 }
 
@@ -325,6 +328,8 @@ void main(void) {
 	struct list_of_words lw = lw_from_file("/home/mathieu/visa-worries.txt");
 	print_list_of_words(lw);
 	print_string_array(lw.list, lw.word_count);
-	create_and_sort_a_key_list(lw);
+	int *key_list = create_a_key_list(lw);
+	sort_twice_and_compare(key_list);
+	free(key_list);
 	free_list_of_words(lw);
 }
