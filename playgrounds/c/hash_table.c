@@ -255,7 +255,7 @@ void quicksort(int* array, int from, int end) {
 
 /*************** Hash table definition **********************/
 typedef struct entry hash_entry;
-struct entry {
+struct entry { // this is taking 24 bytes on my system.
 	int calculated_index;
 	char *key;
 	void *val;
@@ -263,12 +263,11 @@ struct entry {
 
 #define table_length 1000000
 
-void init_table(hash_entry *table[]) {
-	memset(table, 0, table_length*sizeof(char*));
-	// this should not be necessary, isn't memset making those all zeros?
+void test_all_entries(hash_entry *table[]) {
 	int i; for (i = 0; i < table_length; i++) {
 		hash_entry e = (*table)[i];
-		printf("DEBUG: hash_entry is %s => %s\n", e.key, (char*)e.val);
+		printf("DEBUG: hash_entry at %d is %s => %s : [TEST: %s]\n",
+			i, e.key, (char*)e.val, (e.val == NULL ? "TRUE" : "FALSE"));
 	}
 }
 
@@ -366,8 +365,7 @@ void main(void) {
 	int *key_list = create_a_key_list(lw);
 
 	// hash table
-	struct entry **table = malloc_and_set(sizeof(struct entry)*table_length);
-	init_table(&table);
+	hash_entry **table = malloc_and_set(sizeof(hash_entry)*table_length);
 	int i = 0; for (; i < lw.word_count; i++) {
 		hash_set(&table, lw.list[i], lw.list[i]);
 		//table[key_list[i]] = lw.list[i];
