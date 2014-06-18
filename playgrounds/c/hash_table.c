@@ -7,6 +7,13 @@
 #define enable_global_count 1
 #define nil_s(v) (v == NULL ? "NULL" : "object<" #v ">")
 #define bool_s(v) (v == NULL || v == FALSE ? "FALSE" : "TRUE")
+//#define DEBUG
+
+void debug(char *s) {
+#ifdef TRUE
+	printf("DEBUG: %s\n", s);
+#endif
+}
 
 void* malloc_and_set(size_t size) {
 	void *ptr = malloc(size);
@@ -364,9 +371,11 @@ void main(void) {
 	print_string_array(lw.list, lw.word_count);
 	prln;
 	prln;
+	debug("creating key list");
 	int *key_list = create_a_key_list(lw);
 
 	// hash table
+	debug("allocating memory for hash table");
 	hash_entry **table = malloc_and_set(sizeof(hash_entry)*table_length);
 	int i = 0; for (; i < lw.word_count; i++) {
 		hash_set(&table, lw.list[i], lw.list[i]);
