@@ -282,7 +282,7 @@ int key_to_index(char* key) {
 	// hash table
 	struct entry table[10000];
 
-void create_a_key_list(struct list_of_words lw) {
+int* create_a_key_list(struct list_of_words lw) {
 	int* key_list = malloc_and_set(sizeof(int) * lw.word_count);
 	int i = 0; for (; i < lw.word_count; i++) {
 		key_list[i] = key_to_index(lw.list[i]);
@@ -293,33 +293,33 @@ void create_a_key_list(struct list_of_words lw) {
 	return key_list;
 }
 
-void sort_twice_and_compare(int *key_list) {
-	int *copy = array_slice(key_list, 0, lw.word_count);
+void sort_twice_and_compare(int *array, int size) {
+	int *copy = array_slice(array, 0, size);
 
 #ifdef DEBUG
 	prln;
-	printf("*** Unsorted key_list array ***\n");
-	print_num_array(key_list, lw.word_count); prln;
+	printf("*** Unsorted array ***\n");
+	print_num_array(array, size); prln;
 #endif
 
 #ifdef enable_global_count
 	global_count = 0;
-	mergesort(copy, lw.word_count);
-	printf("global count for mergesort is %d for N = %d\n", global_count, lw.word_count);
+	mergesort(copy, size);
+	printf("global count for mergesort is %d for N = %d\n", global_count, size);
 	global_count = 0;
-	quicksort(key_list, 0, lw.word_count);
-	printf("global count for quicksort is %d for N = %d\n", global_count, lw.word_count);
+	quicksort(array, 0, size);
+	printf("global count for quicksort is %d for N = %d\n", global_count, size);
 #endif
 
 #ifdef DEBUG
-	printf("*** Merge-Sorted key_list array ***\n");
-	print_num_array(copy, lw.word_count); prln;
+	printf("*** Merge-Sorted array ***\n");
+	print_num_array(copy, size); prln;
 
-	printf("*** Quick-Sorted key_list array ***\n");
-	print_num_array(key_list, lw.word_count); prln;
+	printf("*** Quick-Sorted array ***\n");
+	print_num_array(array, size); prln;
 #endif
 
-	int r = compare_array(key_list, copy, lw.word_count);
+	int r = compare_array(array, copy, size);
 	printf("\n\nArrays are %sthe same.\n", (r?"" :"not "));
 	free(copy);
 }
@@ -329,7 +329,7 @@ void main(void) {
 	print_list_of_words(lw);
 	print_string_array(lw.list, lw.word_count);
 	int *key_list = create_a_key_list(lw);
-	sort_twice_and_compare(key_list);
+	sort_twice_and_compare(key_list, lw.word_count);
 	free(key_list);
 	free_list_of_words(lw);
 }
