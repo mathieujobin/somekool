@@ -282,6 +282,15 @@ void test_all_entries(hash_entry *table[]) {
 
 int global_adding_counter=0;
 
+void* hash_get(hash_entry *table[], char *key) {
+	int index = key_to_index(key);
+	int first_index = index;
+	while ((*table)[index].calculated_index != first_index) {
+		index++; // increment to look for next item in case of collision.
+	}
+	return (*table)[index].val;
+}
+
 void hash_set(hash_entry *table[], char *key, char *value) {
 	int index = key_to_index(key);
 	int first_index = index;
@@ -380,6 +389,7 @@ void main(void) {
 	debug("storing all words into hash table");
 	int i = 0; for (; i < lw.word_count; i++) {
 		hash_set(&table, lw.list[i], lw.list[i]);
+		debug(hash_get(&table, lw.list[i]));
 		//table[key_list[i]] = lw.list[i];
 	}
 	free(table);
