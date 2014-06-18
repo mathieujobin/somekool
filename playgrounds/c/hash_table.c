@@ -366,12 +366,13 @@ void main(void) {
 	int *key_list = create_a_key_list(lw);
 
 	// hash table
-	hash_entry table[table_length];
+	struct entry **table = malloc_and_set(sizeof(struct entry)*table_length);
 	init_table(&table);
 	int i = 0; for (; i < lw.word_count; i++) {
 		hash_set(&table, lw.list[i], lw.list[i]);
 		//table[key_list[i]] = lw.list[i];
 	}
+	free(table);
 
 	sort_twice_and_compare(key_list, lw.word_count);
 	free(key_list);
