@@ -259,6 +259,33 @@ struct entry {
 	void *val;
 };
 
+// hash table
+#define table_length 10000
+struct entry table[table_length];
+
+// omg, am I really coding this with a global table?
+void init_table() {
+	memset(&table, 0, table_length*sizeof(char*));
+	// this should not be necessary, isn't memset making those all zeros?
+	/*int i; for (i = 0; i < table_length; i++) {
+		table[i].key = 0;
+		table[i].val = 0;
+	}*/
+}
+
+int global_adding_counter=0;
+
+void add_to_table(char *word) {
+	int index = key_to_index(word);
+	int first_index = index;
+	while (table[index].key != 0) {
+		index++; // simply increment to prevent collision.
+	}
+	global_adding_counter++;
+	table[index].key = first_index;
+	table[index].val = word;
+}
+
 // simple hash function that returns an index key for a value
 // for a given string. Takes the ascii value of the first and last char
 // adds them to the length of the string.
@@ -279,8 +306,6 @@ int key_to_index(char* key) {
 }
 
 /********** Main Program *************/
-	// hash table
-	struct entry table[10000];
 
 int* create_a_key_list(struct list_of_words lw) {
 	int* key_list = malloc_and_set(sizeof(int) * lw.word_count);
@@ -303,6 +328,7 @@ void sort_twice_and_compare(int *array, int size) {
 #endif
 
 #ifdef enable_global_count
+	prln;
 	global_count = 0;
 	mergesort(copy, size);
 	printf("global count for mergesort is %d for N = %d\n", global_count, size);
@@ -327,8 +353,18 @@ void sort_twice_and_compare(int *array, int size) {
 void main(void) {
 	struct list_of_words lw = lw_from_file("/home/mathieu/visa-worries.txt");
 	print_list_of_words(lw);
+	prln;
 	print_string_array(lw.list, lw.word_count);
+	prln;
+	prln;
 	int *key_list = create_a_key_list(lw);
+/*
+	init_table();
+	int i = 0; for (; i < lw.word_count; i++) {
+		add_to_table(lw.list[i]);
+		//table[key_list[i]] = lw.list[i];
+	}
+*/
 	sort_twice_and_compare(key_list, lw.word_count);
 	free(key_list);
 	free_list_of_words(lw);
