@@ -396,7 +396,6 @@ void main(void) {
 	int i = 0; for (; i < lw.word_count; i++) {
 		hash_set(&table, lw.list[i], lw.list[i]);
 		debug(hash_get(&table, lw.list[i]));
-		//table[key_list[i]] = lw.list[i];
 	}
 	free(table);
 
