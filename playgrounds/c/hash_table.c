@@ -254,36 +254,42 @@ void quicksort(int* array, int from, int end) {
 }
 
 /*************** Hash table definition **********************/
+typedef struct entry hash_entry;
 struct entry {
+	int calculated_index;
 	char *key;
 	void *val;
 };
 
-// hash table
-#define table_length 10000
-struct entry table[table_length];
+#define table_length 1000000
 
-// omg, am I really coding this with a global table?
-void init_table() {
-	memset(&table, 0, table_length*sizeof(char*));
+void init_table(hash_entry *table[]) {
+	memset(table, 0, table_length*sizeof(char*));
 	// this should not be necessary, isn't memset making those all zeros?
-	/*int i; for (i = 0; i < table_length; i++) {
-		table[i].key = 0;
-		table[i].val = 0;
-	}*/
+	int i; for (i = 0; i < table_length; i++) {
+		hash_entry e = (*table)[i];
+		printf("DEBUG: hash_entry is %s => %s\n", e.key, (char*)e.val);
+	}
 }
 
 int global_adding_counter=0;
 
-void add_to_table(char *word) {
-	int index = key_to_index(word);
+void hash_set(hash_entry *table[], char *key, char *value) {
+	int index = key_to_index(key);
 	int first_index = index;
-	while (table[index].key != 0) {
+	while ((*table)[index].key != 0) {
 		index++; // simply increment to prevent collision.
 	}
+	// for testing...
 	global_adding_counter++;
-	table[index].key = first_index;
-	table[index].val = word;
+#ifdef TRUE
+	printf("DEBUG: Storing {%d, %s, %s} into hash table at index %d.\n",
+		first_index, key, value, index);
+#endif
+	// storing data
+	(*table)[index].calculated_index = first_index;
+	(*table)[index].key = key;
+	(*table)[index].val = value;
 }
 
 // simple hash function that returns an index key for a value
@@ -358,13 +364,15 @@ void main(void) {
 	prln;
 	prln;
 	int *key_list = create_a_key_list(lw);
-/*
-	init_table();
+
+	// hash table
+	hash_entry table[table_length];
+	init_table(&table);
 	int i = 0; for (; i < lw.word_count; i++) {
-		add_to_table(lw.list[i]);
+		hash_set(&table, lw.list[i], lw.list[i]);
 		//table[key_list[i]] = lw.list[i];
 	}
-*/
+
 	sort_twice_and_compare(key_list, lw.word_count);
 	free(key_list);
 	free_list_of_words(lw);
