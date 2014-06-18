@@ -278,15 +278,13 @@ int key_to_index(char* key) {
 		return base_key;
 }
 
+/********** Main Program *************/
 	// hash table
 	struct entry table[10000];
 
-void main(void) {
-	int i;
-	struct list_of_words lw = lw_from_file("/home/mathieu/visa-worries.txt");
-	print_list_of_words(lw);
-	int* key_list = malloc(sizeof(int) * lw.word_count);
-	for (i = 0; i < lw.word_count; i++) {
+void create_and_sort_a_key_list(struct list_of_words lw) {
+	int* key_list = malloc_and_set(sizeof(int) * lw.word_count);
+	int i = 0; for (; i < lw.word_count; i++) {
 		key_list[i] = key_to_index(lw.list[i]);
 		printf("index for word %s is %d\n", lw.list[i], key_list[i]);
 #ifdef DEBUG
@@ -314,8 +312,14 @@ void main(void) {
 	print_num_array(key_list, lw.word_count); prln;
 	int r = compare_array(key_list, copy, lw.word_count);
 	printf("array are the same %d\n", r);
-	print_string_array(lw.list, lw.word_count);
 	free(key_list);
 	free(copy);
+}
+
+void main(void) {
+	struct list_of_words lw = lw_from_file("/home/mathieu/visa-worries.txt");
+	print_list_of_words(lw);
+	print_string_array(lw.list, lw.word_count);
+	create_and_sort_a_key_list(lw);
 	free_list_of_words(lw);
 }
