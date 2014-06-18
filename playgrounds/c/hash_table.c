@@ -3,6 +3,7 @@
 #include <string.h>
 #define TRUE 1
 #define FALSE 0
+#define prln printf("\n")
 
 void* malloc_and_set(size_t size) {
 	void *ptr = malloc(size);
@@ -17,7 +18,7 @@ void print_string_array(char **list, int size) {
 		printf("%s, ", *(list+i));
 	}
 	printf("\x8\x8"); // erasing last delimitor
-	printf(" ]\n");
+	printf(" ]");
 }
 
 void print_num_array(int *list, int size) {
@@ -26,7 +27,7 @@ void print_num_array(int *list, int size) {
 		printf("%d, ", *(list+i));
 	}
 	printf("\x8\x8"); // erasing last delimitor
-	printf(" ]\n");
+	printf(" ]");
 }
 
 int compare_array(int *A, int *B, int N) {
@@ -45,7 +46,9 @@ int compare_array(int *A, int *B, int N) {
 int file_length(FILE *fp) {
 	if (fseek(fp, 0L, SEEK_END)) { printf("error seeking to end...\n"); }
 	int sz = ftell(fp);
+#ifdef DEBUG
 	printf("DEBUG: file size is %d\n", (int)sz);
+#endif
 	fseek(fp, 0L, SEEK_SET);
 	return sz;
 }
@@ -74,7 +77,9 @@ struct list_of_words {
 void free_list_of_words(struct list_of_words lw) {
 	int i;
 	for (i = lw.word_count - 1; i >= 0; i--) {
-		//printf("freeing word \"%s\" at address %d\n", lw.list[i], *(lw.list+i));
+#ifdef DEBUG
+		printf("freeing word \"%s\" at address %d\n", lw.list[i], *(lw.list+i));
+#endif
 		free(*(lw.list+i));
 	}
 	free(lw.list);
@@ -118,14 +123,18 @@ struct list_of_words words_from_content(char *content) {
 			//printf("DEBUG: Char %d is %c (%d)\n", i, c, c);
 		}
 	}
+#ifdef DEBUG
 	printf("DEBUG: creating list of words\n");
+#endif
 	struct list_of_words lw;
 	lw.word_count = word_count;
 	lw.list = malloc_and_set(sizeof(char*)*word_count); // reallocate needed amount of pointers
 	for(i = 0; i < word_count; i++) {
 		lw.list[i] = bucket[i];
 	}
+#ifdef DEBUG
 	printf("DEBUG: done copying, now freeing bucket\n");
+#endif
 	free(bucket);
 	return lw;
 }
@@ -159,6 +168,14 @@ int* mergesort(int* array, int nsize) {
 	int mid = (nsize / 2);
 	int *part_a = mergesort(array_slice(array, 0, mid), mid);
 	int *part_b = mergesort(array_slice(array, mid, nsize), nsize-mid);
+#ifdef DEBUG
+	prln;
+	printf("Input array of size %d is: \n\t", nsize);
+	print_num_array(array, nsize); prln;
+	printf("Splitted at %d and both part are now sorted... \n\t", mid);
+	print_num_array(part_a, mid);
+	print_num_array(part_b, nsize-mid); prln;
+#endif
 
 	int offset_a = 0, offset_b = 0;
 	while (offset_a < mid && offset_b < (nsize-mid)) {
@@ -249,18 +266,21 @@ void main(void) {
 	for (i = 0; i < lw.word_count; i++) {
 		key_list[i] = key_to_index(lw.list[i]);
 		printf("index for word %s is %d\n", lw.list[i], key_list[i]);
+#ifdef DEBUG
+		printf("DEBUG: index for word %s is %d\n", lw.list[i], key_list[i]);
+#endif
 	}
 	int *copy = array_slice(key_list, 0, lw.word_count);
 
 	printf("*** Unsorted key_list array ***\n");
-	print_num_array(key_list, lw.word_count);
+	print_num_array(key_list, lw.word_count); prln;
 
 	printf("*** Merge-Sorted key_list array ***\n");
-	print_num_array(mergesort(copy, lw.word_count), lw.word_count);
+	print_num_array(mergesort(copy, lw.word_count), lw.word_count); prln;
 
 	printf("*** Quick-Sorted key_list array ***\n");
 	quicksort(key_list, 0, lw.word_count);
-	print_num_array(key_list, lw.word_count);
+	print_num_array(key_list, lw.word_count); prln;
 	int r = compare_array(key_list, copy, lw.word_count);
 	printf("array are the same %d\n", r);
 	print_string_array(lw.list, lw.word_count);
