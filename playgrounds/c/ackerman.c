@@ -43,7 +43,7 @@ int ack(int m, int n) {
 }
 
 void main(void) {
-	int m_max = 5, n_max = 17;
+	int m_max = 5, n_max = 20;
 #ifdef enable_global_cache
 	global_ack_cache = malloc_and_set(sizeof(int)*line_length*m_max);
 #endif
