@@ -29,10 +29,8 @@ int ack(int m, int n) {
 	if (m <= 0) {
 		ans = n+1;
 	} else if (n <= 0) {
-		//printf(" --- calling ack(m-1, 1) with {m: %d, n: %d}\n", m, n);
 		ans = ack(m-1, 1);
 	} else {
-		//printf(" --- calling ack(m-1, ack(m, n-1)) with {m: %d, n: %d}\n", m, n);
 		ans = ack(m-1, ack(m, n-1));
 	}
 #ifdef enable_global_cache
@@ -53,9 +51,6 @@ void main(void) {
 	for (i = 0; i <= m_max; i++) {
 		for(j = 0; j <= n_max; j++) {
 			printf("result of ackerman(%d, %d) => %d.", i, j, ack(i, j));
-#ifdef enable_global_cache
-			printf(" cached: %d", *(global_ack_cache+(i*line_length)+j));
-#endif
 			printf("\n");
 		}
 	}
