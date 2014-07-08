@@ -1,5 +1,8 @@
 #include <stdio.h>
 
+/************* Stack overflow warning ****************/
+/************* increase with $ ulimit -s 99999 *******/
+
 void* malloc_and_set(size_t size) {
 	void *ptr = malloc(size);
 	memset(ptr, 0, size);
