@@ -1,8 +1,8 @@
 #!/usr/bin/env ruby
 ################################################
 ## Created as 635 Mar 17 19:39  leana-kuku.rb ##
-## sha256 c00c1fccc27de79673f81b2b7c437e57406 ##
-##        17bfa8c464c58877bb1b2b8ad7300       ##
+## sha256 a50ba9fa477385547428318c1eb57a1d    ##
+##        954b92f65bd035fa18a67da6d81aab16    ##
 ## Just a first quick draft, but it should    ##
 ## give you all combinasons. Since doing them ##
 ## everyday is what is required of them.      ##
@@ -33,10 +33,11 @@ def give_next(all)
     foo = all[rand*9].delete_at(rand*9)
     break if foo&.size == 2
   end
-  puts [foo, foo.first * foo.last].inspect unless foo.nil?
+  end
+  puts [foo.join(" * "), "=", foo.first * foo.last].join(" ") unless foo.nil?
 end
 
 while give_next(all).nil?
   puts "continue? [enter/CTRL-c]"
-  read answer
+  _answer = $stdin.readline
 end
